@@ -1,11 +1,19 @@
 "use client";
 
-import { ChevronDown, Download, MousePointerClick, Redo2, Undo2 } from "lucide-react";
+import {
+    ChevronDown,
+    Download,
+    MousePointerClick,
+    Redo2,
+    Undo2,
+} from "lucide-react";
 import { CiFileOn } from "react-icons/ci";
 import { BsCloudCheck } from "react-icons/bs";
 
 import { Logo } from "@/features/editor/components/logo";
+import { ActiveTool } from "@/features/editor/types";
 
+import { cn } from "@/lib/utils";
 import { Hint } from "@/components/hint";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,7 +24,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 
-export const Navbar = () => {
+interface NavbarProps {
+    activeTool: ActiveTool;
+    onChangeActiveTool: (tool: ActiveTool) => void;
+}
+
+export const Navbar = ({
+    activeTool,
+    onChangeActiveTool
+}: NavbarProps) => {
     return (
         <nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
             <Logo />
@@ -48,11 +64,8 @@ export const Navbar = () => {
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                            {
-                            }
-                        }}
-                        className=""
+                        onClick={() => {onChangeActiveTool("select")}}
+                        className={cn(activeTool === "select" && "bg-gray-100")}
                     >
                         <MousePointerClick className="size-4" />
                     </Button>
@@ -85,22 +98,22 @@ export const Navbar = () => {
                 </Hint>
                 <Separator orientation="vertical" className="mx-2" />
                 <div className="flex items-center gap-x-2">
-                    <BsCloudCheck className="size-[20px] text-muted-foreground"/>
-                    <div className="text-xs test-muted-foreground">
-                        Saved
-                    </div>
+                    <BsCloudCheck className="size-[20px] text-muted-foreground" />
+                    <div className="text-xs test-muted-foreground">Saved</div>
                 </div>
                 <div className="ml-auto flex items-center gap-x-4">
                     <DropdownMenu modal={false}>
                         <DropdownMenuTrigger asChild>
                             <Button size="sm" variant="ghost">
                                 Export
-                                <Download className="size-4 ml-4"/>
+                                <Download className="size-4 ml-4" />
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="min-w-60">
-                            <DropdownMenuItem className="flex items-center gap-x-2"
-                            onClick={()=>{}}>
+                            <DropdownMenuItem
+                                className="flex items-center gap-x-2"
+                                onClick={() => { }}
+                            >
                                 <CiFileOn className="size-8" />
                                 <div>
                                     <p>JSON</p>
@@ -109,8 +122,10 @@ export const Navbar = () => {
                                     </p>
                                 </div>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center gap-x-2"
-                            onClick={()=>{}}>
+                            <DropdownMenuItem
+                                className="flex items-center gap-x-2"
+                                onClick={() => { }}
+                            >
                                 <CiFileOn className="size-8" />
                                 <div>
                                     <p>PNG</p>
@@ -119,8 +134,10 @@ export const Navbar = () => {
                                     </p>
                                 </div>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center gap-x-2"
-                            onClick={()=>{}}>
+                            <DropdownMenuItem
+                                className="flex items-center gap-x-2"
+                                onClick={() => { }}
+                            >
                                 <CiFileOn className="size-8" />
                                 <div>
                                     <p>JPG</p>
@@ -129,8 +146,10 @@ export const Navbar = () => {
                                     </p>
                                 </div>
                             </DropdownMenuItem>
-                            <DropdownMenuItem className="flex items-center gap-x-2"
-                            onClick={()=>{}}>
+                            <DropdownMenuItem
+                                className="flex items-center gap-x-2"
+                                onClick={() => { }}
+                            >
                                 <CiFileOn className="size-8" />
                                 <div>
                                     <p>SVG</p>
