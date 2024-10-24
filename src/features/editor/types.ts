@@ -53,6 +53,7 @@ export type ActiveTool =
 export const FILL_COLOR = "rgba(0,0,0,1)";
 export const STROKE_COLOR = "rgba(0,0,0,1)";
 export const STROKE_WIDTH = 2;
+export const STROKE_DASH_ARRAY = [];
 
 export const CIRCLE_OPTIONS = {
   radius: 200,
@@ -61,6 +62,8 @@ export const CIRCLE_OPTIONS = {
   fill: FILL_COLOR,
   stroke: STROKE_COLOR,
   strokeWidth: STROKE_WIDTH,
+  hoverCursor: "grab",
+  moveCursor: "grabbing",
 }
 
 export const RECTANGLE_OPTIONS = {
@@ -72,6 +75,8 @@ export const RECTANGLE_OPTIONS = {
   width: 400,
   height: 400,
   angle: 0,
+  hoverCursor: "grab",
+  moveCursor: "grabbing",
 }
 
 export const TRIANGLE_OPTIONS = {
@@ -83,6 +88,8 @@ export const TRIANGLE_OPTIONS = {
   width: 400,
   height: 400,
   angle: 0,
+  hoverCursor: "grab",
+  moveCursor: "grabbing",
 }
 
 export const DIAMOND_OPTIONS = {
@@ -94,6 +101,8 @@ export const DIAMOND_OPTIONS = {
   width: 600,
   height: 600,
   angle: 0,
+  hoverCursor: "grab",
+  moveCursor: "grabbing",
 }
 
 export interface EditorHookProps {
@@ -102,19 +111,22 @@ export interface EditorHookProps {
 
 export type BuildEditorProps = {
   canvas: fabric.Canvas;
-  fillColor: string,
-  strokeColor: string,
-  strokeWidth: number,
-  selectedObjects: fabric.Object[],
-  setFillColor: (value: string) => void,
-  setStrokeColor: (value: string) => void,
-  setStrokeWidth: (value: number) => void,
+  fillColor: string;
+  strokeColor: string;
+  strokeWidth: number;
+  strokeDashArray: number[];
+  selectedObjects: fabric.Object[];
+  setFillColor: (value: string) => void;
+  setStrokeColor: (value: string) => void;
+  setStrokeWidth: (value: number) => void;
+  setStrokeDashArray: (value: number[]) => void;
 };
 
 export interface Editor {
   changeFillColor: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
+  changeStrokeDashArray: (value: number[]) => void;
   addCircle: () => void;
   addSoftRectangle: () => void;
   addRectangle: () => void;
@@ -124,6 +136,7 @@ export interface Editor {
   canvas: fabric.Canvas;
   getActiveFillColor: () => string;
   getActiveStrokeColor: () => string;
-  strokeWidth: number;
+  getActiveStrokeWidth: () => number;
+  getActiveStrokeDashArray: () => number[];
   selectedObjects: fabric.Object[];
 }
