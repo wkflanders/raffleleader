@@ -16,6 +16,7 @@ import {
     TEXT_OPTIONS,
     FONT_FAMILY,
     FONT_WEIGHT,
+    FONT_SIZE,
 } from "@/features/editor/types";
 
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
@@ -112,6 +113,16 @@ const buildEditor = ({
                 if(isTextType(object.type)){
                     // @ts-ignore
                     object.set({ textAlign: value });
+                }
+            });
+
+            canvas.renderAll();
+        },
+        changeFontSize: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ fontSize: value });
                 }
             });
 
@@ -303,6 +314,17 @@ const buildEditor = ({
             }
             // @ts-ignore
             const value = selectedObject.get("textAlign") || "left";
+
+            return value;
+        },
+        getActiveFontSize: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return FONT_SIZE;
+            }
+            // @ts-ignore
+            const value = selectedObject.get("fontSize") || FONT_SIZE;
 
             return value;
         },
