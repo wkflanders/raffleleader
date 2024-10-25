@@ -15,6 +15,7 @@ import {
     STROKE_DASH_ARRAY,
     TEXT_OPTIONS,
     FONT_FAMILY,
+    FONT_WEIGHT,
 } from "@/features/editor/types";
 
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
@@ -64,6 +65,56 @@ const buildEditor = ({
                     object.set({ fontFamily: value });
                 }
             });
+            canvas.renderAll();
+        },
+        changeFontWeight: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ fontWeight: value });
+                }
+            });
+
+            canvas.renderAll();
+        },
+        changeFontStyle: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ fontStyle: value });
+                }
+            });
+
+            canvas.renderAll();
+        },
+        changeFontLinethrough: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ linethrough: value });
+                }
+            });
+
+            canvas.renderAll();
+        },
+        changeFontUnderline: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ underline: value });
+                }
+            });
+
+            canvas.renderAll();
+        },
+        changeTextAlign: (value) => {
+            canvas.getActiveObjects().forEach((object) => {
+                if(isTextType(object.type)){
+                    // @ts-ignore
+                    object.set({ textAlign: value });
+                }
+            });
+
             canvas.renderAll();
         },
         changeOpacity: (value) => {
@@ -200,6 +251,61 @@ const buildEditor = ({
             addToCanvas(object);
         },
         canvas,
+        getActiveFontWeight: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return FONT_WEIGHT;
+            }
+            // @ts-ignore
+            const value = selectedObject.get("fontWeight") || FONT_WEIGHT;
+
+            return value;
+        },
+        getActiveFontStyle: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return "normal";
+            }
+            // @ts-ignore
+            const value = selectedObject.get("fontStyle") || "normal";
+
+            return value;
+        },
+        getActiveFontLinethrough: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return false;
+            }
+            // @ts-ignore
+            const value = selectedObject.get("linethrough") || false;
+
+            return value;
+        },
+        getActiveFontUnderline: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return false;
+            }
+            // @ts-ignore
+            const value = selectedObject.get("underline") || false;
+
+            return value;
+        },
+        getActiveTextAlign: () => {
+            const selectedObject = selectedObjects[0];
+
+            if(!selectedObject){
+                return "left";
+            }
+            // @ts-ignore
+            const value = selectedObject.get("textAlign") || "left";
+
+            return value;
+        },
         getActiveFontFamily: () => {
             const selectedObject = selectedObjects[0];
 
