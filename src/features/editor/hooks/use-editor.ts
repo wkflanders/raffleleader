@@ -13,6 +13,7 @@ import {
     STROKE_COLOR,
     STROKE_WIDTH,
     STROKE_DASH_ARRAY,
+    TEXT_OPTIONS,
 } from "@/features/editor/types";
 
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
@@ -52,7 +53,7 @@ const buildEditor = ({
     };
 
     return {
-        changeOpacity: (value: number) => {
+        changeOpacity: (value) => {
             canvas.getActiveObjects().forEach((object) => {
                 object.set({ opacity: value });
             });
@@ -79,14 +80,14 @@ const buildEditor = ({
             const workspace = getWorkspace();
             workspace?.sendToBack();
         },
-        changeFillColor: (value: string) => {
+        changeFillColor: (value) => {
             setFillColor(value);
             canvas.getActiveObjects().forEach((object) => {
                 object.set({ fill: value });
             });
             canvas.renderAll();
         },
-        changeStrokeColor: (value: string) => {
+        changeStrokeColor: (value) => {
             setStrokeColor(value);
             canvas.getActiveObjects().forEach((object) => {
                 // Text types don't have stroke
@@ -98,19 +99,27 @@ const buildEditor = ({
             });
             canvas.renderAll();
         },
-        changeStrokeWidth: (value: number) => {
+        changeStrokeWidth: (value) => {
             setStrokeWidth(value);
             canvas.getActiveObjects().forEach((object) => {
                 object.set({ strokeWidth: value });
             });
             canvas.renderAll();
         },
-        changeStrokeDashArray: (value: number[]) => {
+        changeStrokeDashArray: (value) => {
             setStrokeDashArray(value);
             canvas.getActiveObjects().forEach((object) => {
                 object.set({ strokeDashArray: value });
             });
             canvas.renderAll();
+        },
+        addText: (value, options) => {
+            const object = new fabric.Textbox(value, {
+                ...TEXT_OPTIONS,
+                ...options,
+            });
+
+            addToCanvas(object);
         },
         addCircle: () => {
             const object = new fabric.Circle({
