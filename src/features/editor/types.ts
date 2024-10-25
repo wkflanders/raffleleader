@@ -79,6 +79,7 @@ export const STROKE_WIDTH = 2;
 export const STROKE_DASH_ARRAY = [];
 export const FONT_FAMILY = "Arial";
 export const FONT_SIZE = 32; 
+export const FONT_WEIGHT = 400;
 
 export const TEXT_OPTIONS = {
   type: "textbox",
@@ -166,6 +167,11 @@ export interface Editor {
   bringForward: () => void;
   sendBackwards: () => void;
   changeFillColor: (value: string) => void;
+  changeFontWeight: (value: number) => void;
+  changeFontStyle: (value: string) => void;
+  changeFontLinethrough: (value: boolean) => void;
+  changeFontUnderline: (value: boolean) => void;
+  changeTextAlign: (value: string) => void;
   changeStrokeColor: (value: string) => void;
   changeStrokeWidth: (value: number) => void;
   changeStrokeDashArray: (value: number[]) => void;
@@ -178,6 +184,11 @@ export interface Editor {
   addDiamond: () => void;
   canvas: fabric.Canvas;
   getActiveFontFamily: () => string;
+  getActiveFontWeight: () => number;
+  getActiveFontStyle: () => string;
+  getActiveFontLinethrough: () => boolean;
+  getActiveFontUnderline: () => boolean;
+  getActiveTextAlign: () => string;
   getActiveFillColor: () => string;
   getActiveStrokeColor: () => string;
   getActiveStrokeWidth: () => number;
