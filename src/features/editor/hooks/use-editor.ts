@@ -17,11 +17,14 @@ import {
     FONT_FAMILY,
     FONT_WEIGHT,
     FONT_SIZE,
+    JSON_KEYS,
 } from "@/features/editor/types";
 
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
 import { useClipboard } from "@/features/editor/hooks/use-clipboard";
 import { useCanvasEvents } from "@/features/editor/hooks/use-canvas-events";
+import { useHistory } from "@/features/editor/hooks/use-history";
+
 import { createFilter, isTextType } from "@/features/editor/utils";
 
 const buildEditor = ({
@@ -38,6 +41,11 @@ const buildEditor = ({
     fontFamily,
     copy,
     paste,
+    save,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
     autoZoom,
     setFontFamily,
 }: BuildEditorProps): Editor => {
@@ -80,13 +88,13 @@ const buildEditor = ({
             const workspace = getWorkspace();
             workspace?.set(value);
             autoZoom();
-            // TODO: Save
+            save();
         },
         changeBackground: (value) => {
             const workspace = getWorkspace();
             workspace?.set({ fill: value });
             canvas.renderAll();
-            // TODO: Save
+            save();
         },
         enableDrawingMode: () => {
             canvas.discardActiveObject();
@@ -100,17 +108,21 @@ const buildEditor = ({
         },
         onCopy: () => copy(),
         onPaste: () => paste(),
+        onUndo: () => undo(),
+        onRedo: () => redo(),
+        canUndo: () => canUndo(),
+        canRedo: () => canRedo(),
         changeImageFilter: (value) => {
             const objects = canvas.getActiveObjects();
             objects.forEach((object) => {
-                if(object.type === "image"){
+                if (object.type === "image") {
                     const imageObject = object as fabric.Image;
 
                     const effect = createFilter(value);
 
                     imageObject.filters = effect ? [effect] : [];
                     imageObject.applyFilters();
-                    
+
                     canvas.renderAll();
                 }
             });
@@ -120,7 +132,7 @@ const buildEditor = ({
                 value,
                 (image) => {
                     const workspace = getWorkspace();
-                    
+
                     image.scaleToWidth(workspace?.width || 0);
                     image.scaleToHeight(workspace?.height || 0);
 
@@ -140,7 +152,7 @@ const buildEditor = ({
         changeFontFamily: (value) => {
             setFontFamily(value);
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ fontFamily: value });
                 }
@@ -149,7 +161,7 @@ const buildEditor = ({
         },
         changeFontWeight: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ fontWeight: value });
                 }
@@ -159,7 +171,7 @@ const buildEditor = ({
         },
         changeFontStyle: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ fontStyle: value });
                 }
@@ -169,7 +181,7 @@ const buildEditor = ({
         },
         changeFontLinethrough: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ linethrough: value });
                 }
@@ -179,7 +191,7 @@ const buildEditor = ({
         },
         changeFontUnderline: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ underline: value });
                 }
@@ -189,7 +201,7 @@ const buildEditor = ({
         },
         changeTextAlign: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ textAlign: value });
                 }
@@ -199,7 +211,7 @@ const buildEditor = ({
         },
         changeFontSize: (value) => {
             canvas.getActiveObjects().forEach((object) => {
-                if(isTextType(object.type)){
+                if (isTextType(object.type)) {
                     // @ts-ignore
                     object.set({ fontSize: value });
                 }
@@ -220,7 +232,7 @@ const buildEditor = ({
             });
 
             canvas.renderAll();
-            
+
             const workspace = getWorkspace();
             workspace?.sendToBack();
         },
@@ -230,7 +242,7 @@ const buildEditor = ({
             });
 
             canvas.renderAll();
-            
+
             const workspace = getWorkspace();
             workspace?.sendToBack();
         },
@@ -346,7 +358,7 @@ const buildEditor = ({
         getActiveFontWeight: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return FONT_WEIGHT;
             }
             // @ts-ignore
@@ -357,7 +369,7 @@ const buildEditor = ({
         getActiveFontStyle: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return "normal";
             }
             // @ts-ignore
@@ -368,7 +380,7 @@ const buildEditor = ({
         getActiveFontLinethrough: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return false;
             }
             // @ts-ignore
@@ -379,7 +391,7 @@ const buildEditor = ({
         getActiveFontUnderline: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return false;
             }
             // @ts-ignore
@@ -390,7 +402,7 @@ const buildEditor = ({
         getActiveTextAlign: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return "left";
             }
             // @ts-ignore
@@ -401,7 +413,7 @@ const buildEditor = ({
         getActiveFontSize: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return FONT_SIZE;
             }
             // @ts-ignore
@@ -412,7 +424,7 @@ const buildEditor = ({
         getActiveFontFamily: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return fontFamily;
             }
             // @ts-ignore
@@ -423,7 +435,7 @@ const buildEditor = ({
         getActiveFillColor: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return fillColor;
             }
 
@@ -435,7 +447,7 @@ const buildEditor = ({
         getActiveStrokeColor: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return strokeColor;
             }
 
@@ -446,7 +458,7 @@ const buildEditor = ({
         getActiveStrokeWidth: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return strokeWidth;
             }
 
@@ -457,7 +469,7 @@ const buildEditor = ({
         getActiveStrokeDashArray: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return strokeDashArray;
             }
 
@@ -468,7 +480,7 @@ const buildEditor = ({
         getActiveOpacity: () => {
             const selectedObject = selectedObjects[0];
 
-            if(!selectedObject){
+            if (!selectedObject) {
                 return 1;
             }
 
@@ -493,6 +505,8 @@ export const useEditor = ({
     const [strokeWidth, setStrokeWidth] = useState<number>(STROKE_WIDTH);
     const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
 
+    const { save, canRedo, canUndo, undo, redo, canvasHistory, setHistoryIndex } = useHistory({ canvas });
+
     const { copy, paste } = useClipboard({ canvas });
 
     const { autoZoom } = useAutoResize({
@@ -502,6 +516,7 @@ export const useEditor = ({
 
     useCanvasEvents({
         canvas,
+        save,
         setSelectedObjects,
         clearSelectionCallback,
     });
@@ -524,11 +539,16 @@ export const useEditor = ({
                 autoZoom,
                 copy,
                 paste,
+                save,
+                undo,
+                redo,
+                canUndo,
+                canRedo,
             });
         }
 
         return undefined;
-    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, fontFamily, copy, paste, autoZoom, selectedObjects]);
+    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, fontFamily, copy, paste, save, undo, redo, canUndo, canRedo, autoZoom, selectedObjects]);
 
     const init = useCallback(
         ({
@@ -571,8 +591,15 @@ export const useEditor = ({
 
             setCanvas(initialCanvas);
             setContainer(initialContainer);
+
+            const currentState = JSON.stringify(initialCanvas.toJSON(JSON_KEYS));
+
+            canvasHistory.current = [currentState];
+            setHistoryIndex(0);
         },
-        []
+        [canvasHistory, // No need, this is from useRef
+        setHistoryIndex,// No need, this is from useState
+        ]
     );
 
     return { init, editor };
