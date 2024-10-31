@@ -11,7 +11,7 @@ import { CiFileOn } from "react-icons/ci";
 import { BsCloudCheck } from "react-icons/bs";
 
 import { Logo } from "@/features/editor/components/logo";
-import { ActiveTool } from "@/features/editor/types";
+import { ActiveTool, Editor } from "@/features/editor/types";
 
 import { cn } from "@/lib/utils";
 import { Hint } from "@/components/hint";
@@ -25,11 +25,13 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 interface NavbarProps {
+    editor: Editor | undefined;
     activeTool: ActiveTool;
     onChangeActiveTool: (tool: ActiveTool) => void;
 }
 
 export const Navbar = ({
+    editor,
     activeTool,
     onChangeActiveTool
 }: NavbarProps) => {
@@ -64,7 +66,7 @@ export const Navbar = ({
                     <Button
                         variant="ghost"
                         size="icon"
-                        onClick={() => {onChangeActiveTool("select")}}
+                        onClick={() => { onChangeActiveTool("select") }}
                         className={cn(activeTool === "select" && "bg-gray-100")}
                     >
                         <MousePointerClick className="size-4" />
@@ -72,26 +74,20 @@ export const Navbar = ({
                 </Hint>
                 <Hint label="Undo" side="bottom" sideOffset={10}>
                     <Button
+                        disabled={!editor?.canUndo()}
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                            {
-                            }
-                        }}
-                        className=""
+                        onClick={() => editor?.onUndo()}
                     >
                         <Undo2 className="size-4" />
                     </Button>
                 </Hint>
                 <Hint label="Redo" side="bottom" sideOffset={10}>
                     <Button
+                        disabled={!editor?.canRedo()}
                         variant="ghost"
                         size="icon"
-                        onClick={() => {
-                            {
-                            }
-                        }}
-                        className=""
+                        onClick={() => editor?.onRedo()}
                     >
                         <Redo2 className="size-4" />
                     </Button>
