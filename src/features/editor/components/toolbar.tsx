@@ -4,7 +4,7 @@ import { ActiveTool, Editor, FONT_SIZE, FONT_WEIGHT } from "@/features/editor/ty
 
 import { BsBorderWidth } from "react-icons/bs";
 import { FaBold, FaItalic, FaStrikethrough, FaUnderline } from "react-icons/fa";
-import { ArrowUp, ArrowDown, ChevronDown, AlignLeft, AlignCenter, AlignRight, Trash, SquareSplitHorizontal } from "lucide-react";
+import { ArrowUp, ArrowDown, ChevronDown, AlignLeft, AlignCenter, AlignRight, Trash, SquareSplitHorizontal, Copy } from "lucide-react";
 import { RxTransparencyGrid } from "react-icons/rx";
 import { TbColorFilter } from "react-icons/tb";
 
@@ -418,6 +418,20 @@ export const Toolbar = ({
                         className={cn(activeTool === "opacity" && "bg-gray-100")}
                     >
                         <RxTransparencyGrid className="size-4" />
+                    </Button>
+                </Hint>
+            </div>
+            <div className="flex items-center h-full justify-center">
+                <Hint label="Duplicate" side="bottom" sideOffset={5}>
+                    <Button
+                        onClick={() => {
+                            editor?.onCopy();
+                            editor?.onPaste();
+                        }}
+                        size="icon"
+                        variant="ghost"
+                    >
+                        <Copy className="size-4" />
                     </Button>
                 </Hint>
             </div>
