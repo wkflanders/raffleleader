@@ -20,6 +20,7 @@ import {
 } from "@/features/editor/types";
 
 import { useAutoResize } from "@/features/editor/hooks/use-auto-resize";
+import { useClipboard } from "@/features/editor/hooks/use-clipboard";
 import { useCanvasEvents } from "@/features/editor/hooks/use-canvas-events";
 import { createFilter, isTextType } from "@/features/editor/utils";
 
@@ -35,6 +36,8 @@ const buildEditor = ({
     setStrokeDashArray,
     selectedObjects,
     fontFamily,
+    copy,
+    paste,
     setFontFamily,
 }: BuildEditorProps): Editor => {
     const getWorkspace = () => {
@@ -58,6 +61,8 @@ const buildEditor = ({
     };
 
     return {
+        onCopy: () => copy(),
+        onPaste: () => paste(),
         changeImageFilter: (value) => {
             const objects = canvas.getActiveObjects();
             objects.forEach((object) => {
@@ -449,6 +454,8 @@ export const useEditor = ({
     const [strokeWidth, setStrokeWidth] = useState<number>(STROKE_WIDTH);
     const [strokeDashArray, setStrokeDashArray] = useState<number[]>(STROKE_DASH_ARRAY);
 
+    const { copy, paste } = useClipboard({ canvas });
+
     useAutoResize({
         canvas,
         container,
@@ -475,11 +482,13 @@ export const useEditor = ({
                 selectedObjects,
                 fontFamily,
                 setFontFamily,
+                copy,
+                paste,
             });
         }
 
         return undefined;
-    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, fontFamily, selectedObjects]);
+    }, [canvas, fillColor, strokeColor, strokeWidth, strokeDashArray, fontFamily, copy, paste, selectedObjects]);
 
     const init = useCallback(
         ({
