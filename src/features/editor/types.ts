@@ -209,6 +209,11 @@ export type BuildEditorProps = {
 export interface Editor {
   autoZoom: () => void;
   getWorkspace: () => fabric.Object | undefined;
+  savePng: () => void;
+  saveSvg: () => void;
+  saveJpg: () => void;
+  saveJson: () => void;
+  loadJson: (value: string) => void;
   zoomIn: () => void;
   zoomOut: () => void;
   changeBackground: (value: string) => void; 
