@@ -184,10 +184,14 @@ export type BuildEditorProps = {
   setStrokeColor: (value: string) => void;
   setStrokeWidth: (value: number) => void;
   setStrokeDashArray: (value: number[]) => void;
+  copy: () => void;
+  paste: () => void;
   setFontFamily: (value: string) => void;
 };
 
 export interface Editor {
+  onCopy: () => void;
+  onPaste: () => void;
   changeImageFilter: (value: string) => void;
   addImage: (value: string) => void;
   delete: () => void;
