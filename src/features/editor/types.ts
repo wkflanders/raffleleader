@@ -186,10 +186,14 @@ export type BuildEditorProps = {
   setStrokeDashArray: (value: number[]) => void;
   copy: () => void;
   paste: () => void;
+  autoZoom: () => void;
   setFontFamily: (value: string) => void;
 };
 
 export interface Editor {
+  getWorkspace: () => fabric.Object | undefined;
+  changeBackground: (value: string) => void; 
+  changeSize: (value: { width: number; height: number }) => void;
   enableDrawingMode: () => void;
   disableDrawingMode: () => void;
   onCopy: () => void;
